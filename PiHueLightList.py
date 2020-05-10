@@ -27,7 +27,7 @@
 # pip3 install phue
 # pip3 install touchphat
 from phue import Bridge
-import touchphat
+import rainbowhat as rh
 import time
 
 # ==============================================================================================
@@ -39,7 +39,7 @@ touchphat.all_off()
 # Stuff you need to change!
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # The IP address of the Hue bridge and a list of lights you want to use
-bridgeip = '192.168.13.178'  # <<<<<<<<<<<
+bridgeip = '192.168.0.241'  # <<<<<<<<<<<
 lights = ['Desk', 'Ikea']  # <<<<<<<<<<<
 
 # -----------------------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ b = Bridge(bridgeip)
 # This will save your connection details in /home/pi/.python_hue
 # Delete that file if you change bridges
 # b.connect() # <<<<<<<<<<
-
+# b = Bridge('192.168.0.241')
 # An array of the light name and the light type.
 # Expand if you have something different - please let me know if you do!
 lighttype = []
