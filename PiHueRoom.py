@@ -62,6 +62,7 @@ b = Bridge(bridgeip)
 # {"192.168.0.241": {"username": "LUDZE-wKv6nr5eticaudf3yDskcWn3Eje7jqz89O"}}
 # Find the room number from the room name
 allrooms = b.get_group()
+print('allrooms set')
 rooms = {}
 
 for num, room in enumerate(allrooms.keys(), start=1):
@@ -81,19 +82,33 @@ selected_room = 1
 # Wait time between sending messages to the bridge - to stop congestion
 defaultwaittime = 0.41
 
-
+is_asleep = False
 # = End of Setup ============================================================================
 
 # -------------------------------------------------------------------------------------------
 # Functions
 # -------------------------------------------------------------------------------------------
 
-# display room name on board
+# Display room name on board
+
+
 def display_room_name():
     rh.display.clear()
     rh.display.print_str(rooms.get(selected_room)['name'])
     rh.display.show()
     display_led_indicator()
+
+# display sleep, turn off display and led
+
+
+def go_to_sleep():
+    print('go to sleep called')
+    global is_asleep
+    is_asleep = True
+    rh.display.clear()
+    rh.display.show()
+    rh.rainbow.clear()
+    rh.rainbow.show()
 
 # Identifies if any of the lamps in the room are on
 # Return Value: True if any lamps are on, otherwise False
@@ -119,8 +134,12 @@ def display_led_indicator():
 def touch_a(channel):
     print('Button A pressed')
     rh.lights.rgb(1, 0, 0)
-    global selected_room, number_rooms
-    if selected_room > 1:
+    global selected_room, number_rooms, is_asleep
+    if is_asleep:
+        display_room_name()
+        is_asleep = False
+        return
+    elif selected_room > 1:
         selected_room = selected_room - 1
     else:
         selected_room = number_rooms
@@ -138,8 +157,12 @@ def release_a(channel):
 def touch_b(channel):
     print('Button B pressed')
     rh.lights.rgb(0, 1, 0)
-    global selected_room, number_rooms
-    if selected_room < number_rooms:
+    global selected_room, number_rooms, is_asleep
+    if is_asleep:
+        display_room_name()
+        is_asleep = False
+        return
+    elif selected_room < number_rooms:
         selected_room = selected_room + 1
     else:
         selected_room = 1
@@ -156,7 +179,11 @@ def release_b(channel):
 def touch_c(channel):
     print('Button C pressed')
     rh.lights.rgb(0, 0, 1)
-    global selected_room
+    global selected_room, is_asleep
+    if is_asleep:
+        display_room_name()
+        is_asleep = False
+        return
     lampon = islampon()
     if lampon:
         b.set_group(selected_room, 'on', False)
@@ -178,5 +205,5 @@ def release_c(channel):
 # Main loop - keep going forever
 # ================================================================
 while True:
-    display_room_name()
-    time.sleep(10)
+    go_to_sleep()
+    time.sleep(18)
